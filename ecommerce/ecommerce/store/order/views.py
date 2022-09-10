@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from django.contrib.auth import get_user_model
 from .serializers import OrderSerializer
 from .models import Order
@@ -60,3 +60,4 @@ def add(request, id, token):
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all().order_by('id')
     serializer_class = OrderSerializer
+    permission_classes = [permissions.IsAdminUser]

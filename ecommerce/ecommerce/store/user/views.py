@@ -4,7 +4,7 @@ from django.shortcuts import render
 from .serializers import UserSerializer
 from .models import CustomUser
 from django.utils.crypto import get_random_string
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from django.http import JsonResponse
 from django.contrib.auth import get_user_model
@@ -108,3 +108,37 @@ class UserViewSet(viewsets.ModelViewSet):
         elif self.action == 'list' or self.action == 'destroy':
             permission_classes = [IsAdminUser]
         return [permission() for permission in permission_classes]
+
+
+
+# ======================================================================
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import authentication, permissions
+from django.contrib.auth.models import User
+
+# for Customers          ---- Restricted access of normal users and Omitted Admins & Staffs from the queryset
+class ListUsers(APIView):
+    """
+    View to list all users in the system.
+
+    * Requires token authentication.
+    * Only admin users are able to access this view.
+    """
+    # authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAdminUser]
+
+    def get(self, request, format=None):
+        """
+        Return a list of all users.
+        """
+        usernames = [user.username for user in CustomUser.objects.filter(is_superuser=False, is_staff=False)]
+       
+        return Response(usernames)
+    # =================================
+        
+    
+    
+
+

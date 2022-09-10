@@ -34,3 +34,6 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         }
         fields = ('name', 'email', 'password', 'phone',
                   'gender', 'is_active', 'is_staff', 'is_superuser')
+
+
+
